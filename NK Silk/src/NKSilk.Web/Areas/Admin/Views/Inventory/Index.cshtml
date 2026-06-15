@@ -1,0 +1,54 @@
+@model IReadOnlyList<AdminInventoryItemVm>
+@{
+    ViewData["Title"] = "Inventory";
+    var search = ViewData["Search"] as string;
+}
+
+<form method="get" class="d-flex mb-3" style="max-width:360px">
+    <input type="search" name="search" value="@search" class="form-control form-control-sm" placeholder="Search product or SKU" />
+    <button class="btn btn-sm btn-outline-secondary ms-1">Search</button>
+</form>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th class="ps-3">Product</th><th>SKU</th><th>Variant</th>
+                    <th>Reserved</th><th>Available</th><th style="width:340px">Update stock</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var i in Model)
+            {
+                <tr class="@(i.IsLow ? "table-warning" : "")">
+                    <td class="ps-3 fw-semibold">@i.ProductName</td>
+                    <td><code>@i.Sku</code></td>
+                    <td>@i.ColorName @(string.IsNullOrEmpty(i.SizeName) ? "" : "/ " + i.SizeName)</td>
+                    <td>@i.QuantityReserved</td>
+                    <td>@i.Available @(i.IsLow ? "⚠️" : "")</td>
+                    <td>
+                        <form asp-action="Update" method="post" class="d-flex gap-2 align-items-center">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="variantId" value="@i.VariantId" />
+                            <div>
+                                <label class="form-label small mb-0">On hand</label>
+                                <input type="number" name="quantityOnHand" value="@i.QuantityOnHand" min="0" class="form-control form-control-sm" style="width:90px" />
+                            </div>
+                            <div>
+                                <label class="form-label small mb-0">Reorder</label>
+                                <input type="number" name="reorderLevel" value="@i.ReorderLevel" min="0" class="form-control form-control-sm" style="width:80px" />
+                            </div>
+                            <button class="btn btn-sm btn-accent align-self-end">Save</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="6" class="text-center text-muted py-4">No variants found.</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

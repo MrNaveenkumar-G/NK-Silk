@@ -1,0 +1,38 @@
+@model IReadOnlyList<AdminCustomerVm>
+@{
+    ViewData["Title"] = "Customers";
+    var search = ViewData["Search"] as string;
+}
+
+<form method="get" class="d-flex mb-3" style="max-width:360px">
+    <input type="search" name="search" value="@search" class="form-control form-control-sm" placeholder="Search name or email" />
+    <button class="btn btn-sm btn-outline-secondary ms-1">Search</button>
+</form>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table mb-0 align-middle">
+            <thead><tr><th class="ps-3">Name</th><th>Email</th><th>Phone</th><th>Orders</th><th>Joined</th><th>Role</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td class="ps-3 fw-semibold">@c.FullName</td>
+                    <td>@c.Email</td>
+                    <td>@(c.PhoneNumber ?? "—")</td>
+                    <td>@c.OrderCount</td>
+                    <td>@c.JoinedAtUtc.ToLocalTime().ToString("dd MMM yyyy")</td>
+                    <td>
+                        @if (c.IsAdmin) { <span class="badge bg-dark">Admin</span> } else { <span>Customer</span> }
+                    </td>
+                    <td><a class="btn btn-sm btn-outline-dark" asp-controller="Access" asp-action="Customer" asp-route-id="@c.Id">Manage access</a></td>
+                </tr>
+            }
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="7" class="text-center text-muted py-4">No customers found.</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\bin\Debug\net8.0\NKSilk.Infrastructure.deps.json
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\bin\Debug\net8.0\NKSilk.Infrastructure.dll
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\bin\Debug\net8.0\NKSilk.Infrastructure.pdb
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\bin\Debug\net8.0\NKSilk.Application.dll
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\bin\Debug\net8.0\NKSilk.Domain.dll
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\bin\Debug\net8.0\NKSilk.Domain.pdb
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\bin\Debug\net8.0\NKSilk.Application.pdb
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\obj\Debug\net8.0\NKSilk.Infrastructure.csproj.AssemblyReference.cache
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\obj\Debug\net8.0\NKSilk.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\obj\Debug\net8.0\NKSilk.Infrastructure.AssemblyInfoInputs.cache
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\obj\Debug\net8.0\NKSilk.Infrastructure.AssemblyInfo.cs
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\obj\Debug\net8.0\NKSilk.Infrastructure.csproj.CoreCompileInputs.cache
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\obj\Debug\net8.0\NKSilk.I.3A6BC726.Up2Date
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\obj\Debug\net8.0\NKSilk.Infrastructure.dll
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\obj\Debug\net8.0\refint\NKSilk.Infrastructure.dll
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\obj\Debug\net8.0\NKSilk.Infrastructure.pdb
+D:\Naveen\NK Silk\src\NKSilk.Infrastructure\obj\Debug\net8.0\ref\NKSilk.Infrastructure.dll

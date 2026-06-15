@@ -1,0 +1,84 @@
+@model ReturnRequestVm
+@{
+    ViewData["Title"] = $"Return items · {Model.OrderNumber}";
+    string ReasonLabel(ReturnReason r) => r switch
+    {
+        ReturnReason.DefectiveOrDamaged => "Defective or damaged",
+        ReturnReason.WrongItemDelivered => "Wrong item delivered",
+        ReturnReason.SizeOrFitIssue => "Size or fit issue",
+        ReturnReason.NotAsDescribed => "Not as described",
+        ReturnReason.QualityNotSatisfactory => "Quality not satisfactory",
+        ReturnReason.ChangedMind => "Changed my mind",
+        _ => "Other"
+    };
+}
+<div class="container py-4" style="max-width:760px">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-controller="Orders" asp-action="Index">My Orders</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderNumber">@Model.OrderNumber</a></li>
+            <li class="breadcrumb-item active">Return</li>
+        </ol>
+    </nav>
+
+    <h1 class="h4 mb-3">Return items from @Model.OrderNumber</h1>
+
+    @if (TempData["Error"] is string err)
+    {
+        <div class="alert alert-danger py-2">@err</div>
+    }
+
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="OrderNumber" />
+
+        <div class="card mb-3">
+            <div class="card-body p-0">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th class="ps-3">Item</th><th>Price</th><th style="width:130px">Return qty</th></tr></thead>
+                    <tbody>
+                        @foreach (var line in Model.Lines)
+                        {
+                            <tr>
+                                <td class="ps-3">
+                                    @line.ProductName
+                                    <br /><small class="text-muted">@line.ColorName @(string.IsNullOrEmpty(line.SizeName) ? "" : "/ " + line.SizeName) · ordered @line.QuantityOrdered</small>
+                                </td>
+                                <td>₹@line.UnitPrice.ToString("N0")</td>
+                                <td>
+                                    <select class="form-select form-select-sm" name="Quantities[@line.OrderItemId]">
+                                        @for (var q = 0; q <= line.QuantityOrdered; q++)
+                                        {
+                                            <option value="@q">@q</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label class="form-label" asp-for="Reason">Reason</label>
+                <select class="form-select" asp-for="Reason">
+                    @foreach (var r in Enum.GetValues<ReturnReason>())
+                    {
+                        <option value="@r">@ReasonLabel(r)</option>
+                    }
+                </select>
+            </div>
+            <div class="col-12">
+                <label class="form-label" asp-for="Comments">Comments (optional)</label>
+                <textarea class="form-control" asp-for="Comments" rows="3" placeholder="Tell us a little more…"></textarea>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-accent">Submit return request</button>
+            <a class="btn btn-outline-secondary" asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderNumber">Cancel</a>
+        </div>
+    </form>
+</div>

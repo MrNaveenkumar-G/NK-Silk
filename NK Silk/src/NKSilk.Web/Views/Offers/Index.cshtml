@@ -1,0 +1,50 @@
+@model IReadOnlyList<OfferCardVm>
+@{
+    ViewData["Title"] = "Offers";
+}
+<div class="container py-4">
+    <h1 class="h4 mb-4">Festival &amp; Seasonal Offers</h1>
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-light border text-center py-5">No live offers right now — check back soon!</div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var o in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        @if (!string.IsNullOrEmpty(o.BannerImageUrl))
+                        {
+                            <img src="@o.BannerImageUrl" class="card-img-top" alt="@o.Title" style="object-fit:cover;max-height:160px" />
+                        }
+                        <div class="card-body">
+                            <span class="badge bg-danger mb-2">@o.Headline</span>
+                            <h2 class="h6">@o.Title</h2>
+                            @if (!string.IsNullOrEmpty(o.Description)) { <p class="small text-muted mb-2">@o.Description</p> }
+                            <p class="small mb-2">
+                                @(o.Scope == NKSilk.Domain.Enums.OfferScope.EntireStore ? "On everything" :
+                                  o.Scope == NKSilk.Domain.Enums.OfferScope.Category ? $"On {o.ScopeName}" : $"On {o.ScopeName}")
+                                · ends @o.EndsAtUtc.ToLocalTime().ToString("dd MMM")
+                            </p>
+                            @if (o.Scope == NKSilk.Domain.Enums.OfferScope.Category && o.TargetSlug != null)
+                            {
+                                <a class="btn btn-sm btn-accent" asp-controller="Catalog" asp-action="Index" asp-route-category="@o.TargetSlug">Shop now</a>
+                            }
+                            else if (o.Scope == NKSilk.Domain.Enums.OfferScope.Product && o.TargetSlug != null)
+                            {
+                                <a class="btn btn-sm btn-accent" asp-controller="Catalog" asp-action="Details" asp-route-id="@o.TargetSlug">Shop now</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-sm btn-accent" asp-controller="Catalog" asp-action="Index">Shop now</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

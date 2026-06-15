@@ -1,0 +1,74 @@
+@model SupportTicketDetailVm
+@{
+    ViewData["Title"] = $"Ticket {Model.TicketNumber}";
+}
+
+<a asp-action="Index" class="btn btn-sm btn-link px-0 mb-2">← All tickets</a>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">@Model.Subject</span>
+                <span class="badge bg-secondary">@Model.Status</span>
+            </div>
+            <ul class="list-group list-group-flush">
+                @foreach (var m in Model.Messages)
+                {
+                    <li class="list-group-item @(m.IsStaff ? "bg-light" : "")">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-semibold">@m.AuthorName @(m.IsStaff ? "(Support)" : "")</span>
+                            <small class="text-muted">@m.CreatedAtUtc.ToLocalTime().ToString("dd MMM, h:mm tt")</small>
+                        </div>
+                        <div class="small" style="white-space:pre-wrap">@m.Body</div>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-white fw-semibold">Reply</div>
+            <div class="card-body">
+                <form asp-action="Reply" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="ticketNumber" value="@Model.TicketNumber" />
+                    <textarea name="body" class="form-control mb-2" rows="3" placeholder="Write a reply to the customer…" required></textarea>
+                    <button class="btn btn-accent btn-sm">Send reply</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-header bg-white fw-semibold">Status</div>
+            <div class="card-body">
+                <form asp-action="SetStatus" method="post" class="d-flex gap-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="ticketNumber" value="@Model.TicketNumber" />
+                    <select name="status" class="form-select form-select-sm">
+                        @foreach (var s in Enum.GetValues<TicketStatus>())
+                        {
+                            <option value="@s" selected="@(s == Model.Status)">@s</option>
+                        }
+                    </select>
+                    <button class="btn btn-sm btn-accent">Set</button>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header bg-white fw-semibold">Customer</div>
+            <div class="card-body small">
+                <p class="mb-1">@Model.CustomerName</p>
+                <p class="mb-1 text-muted">@Model.CustomerEmail</p>
+                <p class="mb-0">Category: @Model.Category</p>
+                @if (Model.OrderNumber is not null)
+                {
+                    <p class="mb-0">Order:
+                        <a asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderNumber">@Model.OrderNumber</a>
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

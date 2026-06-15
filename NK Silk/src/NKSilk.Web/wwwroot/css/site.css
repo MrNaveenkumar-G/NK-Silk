@@ -1,0 +1,63 @@
+:root {
+    --nk-primary: #4a1f2b;   /* deep maroon */
+    --nk-accent: #c79a3a;    /* gold */
+    --nk-bg: #fbf7f2;        /* warm off-white */
+}
+
+html { font-size: 14px; position: relative; min-height: 100%; }
+@media (min-width: 768px) { html { font-size: 16px; } }
+
+body {
+    background: var(--nk-bg);
+    color: #2b2b2b;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.text-accent { color: var(--nk-accent) !important; }
+
+.btn-accent {
+    background: var(--nk-accent);
+    border-color: var(--nk-accent);
+    color: #fff;
+}
+.btn-accent:hover { background: #b1862c; border-color: #b1862c; color: #fff; }
+
+/* Navbar */
+.nk-navbar {
+    background: #fff;
+    border-bottom: 2px solid var(--nk-accent);
+}
+.nk-navbar .navbar-brand { font-size: 1.4rem; color: var(--nk-primary); letter-spacing: .5px; }
+.nk-navbar .nav-link { color: var(--nk-primary); font-weight: 500; }
+.nk-navbar .nav-link:hover { color: var(--nk-accent); }
+
+/* Hero */
+.nk-hero {
+    min-height: 360px;
+    background: linear-gradient(135deg, rgba(74,31,43,.92), rgba(74,31,43,.65)),
+                url('/img/hero.svg') center/cover no-repeat;
+}
+
+/* Cards */
+.nk-category-card img,
+.nk-product-card .card-img-top { aspect-ratio: 3 / 4; object-fit: cover; }
+.nk-product-card { transition: box-shadow .15s ease, transform .15s ease; border: 1px solid #eee; }
+.nk-product-card:hover { box-shadow: 0 .5rem 1rem rgba(0,0,0,.08); transform: translateY(-2px); }
+.nk-category-card { transition: transform .15s ease; border: 1px solid #eee; }
+.nk-category-card:hover { transform: translateY(-2px); }
+
+.nk-clamp-2 {
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; min-height: 2.6em;
+}
+
+/* PDP */
+.nk-pdp-gallery img { aspect-ratio: 3 / 4; object-fit: cover; }
+.nk-spec .list-group-item { background: transparent; padding-left: 0; padding-right: 0; }
+.nk-cart-table img { object-fit: cover; }
+
+/* Footer */
+.nk-footer { background: var(--nk-primary); color: #f3e9d8; margin-top: auto; }
+.nk-footer a { color: var(--nk-accent); text-decoration: none; }

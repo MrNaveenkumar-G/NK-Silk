@@ -1,0 +1,15 @@
+D:\Naveen\NK Silk\src\NKSilk.Application\bin\Debug\net8.0\NKSilk.Application.deps.json
+D:\Naveen\NK Silk\src\NKSilk.Application\bin\Debug\net8.0\NKSilk.Application.dll
+D:\Naveen\NK Silk\src\NKSilk.Application\bin\Debug\net8.0\NKSilk.Application.pdb
+D:\Naveen\NK Silk\src\NKSilk.Application\bin\Debug\net8.0\NKSilk.Domain.dll
+D:\Naveen\NK Silk\src\NKSilk.Application\bin\Debug\net8.0\NKSilk.Domain.pdb
+D:\Naveen\NK Silk\src\NKSilk.Application\obj\Debug\net8.0\NKSilk.Application.csproj.AssemblyReference.cache
+D:\Naveen\NK Silk\src\NKSilk.Application\obj\Debug\net8.0\NKSilk.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\Naveen\NK Silk\src\NKSilk.Application\obj\Debug\net8.0\NKSilk.Application.AssemblyInfoInputs.cache
+D:\Naveen\NK Silk\src\NKSilk.Application\obj\Debug\net8.0\NKSilk.Application.AssemblyInfo.cs
+D:\Naveen\NK Silk\src\NKSilk.Application\obj\Debug\net8.0\NKSilk.Application.csproj.CoreCompileInputs.cache
+D:\Naveen\NK Silk\src\NKSilk.Application\obj\Debug\net8.0\NKSilk.A.8625DB4F.Up2Date
+D:\Naveen\NK Silk\src\NKSilk.Application\obj\Debug\net8.0\NKSilk.Application.dll
+D:\Naveen\NK Silk\src\NKSilk.Application\obj\Debug\net8.0\refint\NKSilk.Application.dll
+D:\Naveen\NK Silk\src\NKSilk.Application\obj\Debug\net8.0\NKSilk.Application.pdb
+D:\Naveen\NK Silk\src\NKSilk.Application\obj\Debug\net8.0\ref\NKSilk.Application.dll

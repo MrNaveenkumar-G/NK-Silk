@@ -1,0 +1,93 @@
+@model CartVm
+@{
+    ViewData["Title"] = "Your Cart";
+}
+
+<div class="container py-4">
+    <h1 class="h4 mb-4">Your Cart</h1>
+
+    @if (Model.IsEmpty)
+    {
+        <div class="alert alert-light border text-center py-5">
+            Your cart is empty. <a asp-controller="Catalog" asp-action="Index">Start shopping →</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="table-responsive">
+                    <table class="table align-middle nk-cart-table">
+                        <thead>
+                            <tr><th>Product</th><th>Price</th><th style="width:140px">Qty</th><th>Total</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var line in Model.Lines)
+                            {
+                                <tr data-item-id="@line.CartItemId">
+                                    <td>
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <img src="@(line.ImageUrl ?? "/img/product-placeholder.svg")" width="56" height="72" class="rounded" alt="@line.ProductName" />
+                                            <div>
+                                                <a asp-controller="Catalog" asp-action="Details" asp-route-id="@line.ProductSlug" class="text-dark text-decoration-none fw-semibold d-block">@line.ProductName</a>
+                                                <small class="text-muted">@line.ColorName @(string.IsNullOrEmpty(line.SizeName) ? "" : " / " + line.SizeName)</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (line.HasOffer)
+                                        {
+                                            <span class="text-danger fw-semibold">₹@line.UnitPrice.ToString("N0")</span><br />
+                                            <small class="text-muted text-decoration-line-through">₹@line.OriginalUnitPrice.ToString("N0")</small>
+                                            @if (!string.IsNullOrEmpty(line.OfferTitle)) { <small class="text-danger d-block">@line.OfferTitle</small> }
+                                        }
+                                        else
+                                        {
+                                            <text>₹@line.UnitPrice.ToString("N0")</text>
+                                        }
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm js-qty" value="@line.Quantity" min="1" style="max-width:80px" />
+                                    </td>
+                                    <td class="js-line-total">₹@line.LineTotal.ToString("N0")</td>
+                                    <td><button class="btn btn-sm btn-outline-danger js-remove">Remove</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="h6">Order Summary</h2>
+                        <div class="d-flex justify-content-between"><span>Subtotal</span><strong id="cartSubtotal">₹@Model.SubTotal.ToString("N0")</strong></div>
+                        @if (Model.OfferSavings > 0)
+                        {
+                            <div class="d-flex justify-content-between text-success small"><span>Offer savings</span><span>−₹@Model.OfferSavings.ToString("N0")</span></div>
+                        }
+                        @if (Model.ComboSavings > 0)
+                        {
+                            <div class="d-flex justify-content-between text-success"><span>Combo savings</span><span>−₹@Model.ComboSavings.ToString("N0")</span></div>
+                            <div class="small text-muted">Applied: @string.Join(", ", Model.AppliedCombos)</div>
+                        }
+                        @if (Model.ComboSavings > 0)
+                        {
+                            <hr class="my-2" />
+                            <div class="d-flex justify-content-between fw-bold"><span>Payable</span><span>₹@Model.Payable.ToString("N0")</span></div>
+                        }
+                        <div class="d-flex justify-content-between text-muted small"><span>Shipping</span><span>Calculated at checkout</span></div>
+                        <hr />
+                        <a asp-controller="Checkout" asp-action="Index" class="btn btn-accent w-100">Proceed to Checkout</a>
+                        <small class="text-muted d-block mt-2">You'll be asked to sign in if you haven't already.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script> NKSilk.initCartPage(); </script>
+}

@@ -1,0 +1,54 @@
+@model ProductListVm
+@{
+    ViewData["Title"] = Model.CategoryName ?? (string.IsNullOrEmpty(Model.SearchTerm) ? "Shop" : $"Search: {Model.SearchTerm}");
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active">@ViewData["Title"]</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h1 class="h4 mb-0">@ViewData["Title"]</h1>
+        <span class="text-muted small">@Model.TotalCount item(s) found</span>
+    </div>
+
+    @if (Model.Products.Count == 0)
+    {
+        <div class="alert alert-light border text-center py-5">
+            No products found. <a asp-controller="Catalog" asp-action="Index">Browse everything</a>.
+        </div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var p in Model.Products)
+            {
+                <div class="col-6 col-md-4 col-lg-3">
+                    <partial name="_ProductCard" model="p" />
+                </div>
+            }
+        </div>
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    @for (var i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.Page ? "active" : "")">
+                            <a class="page-link"
+                               asp-action="Index"
+                               asp-route-category="@Model.CategorySlug"
+                               asp-route-search="@Model.SearchTerm"
+                               asp-route-page="@i">@i</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    }
+</div>

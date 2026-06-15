@@ -1,0 +1,177 @@
+@model CheckoutVm
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="container py-4">
+    <h1 class="h4 mb-4">Checkout</h1>
+    <form asp-action="Place" method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h2 class="h6 mb-3">Shipping Address</h2>
+                        @{ var saved = ViewBag.SavedAddresses as IReadOnlyList<AddressVm>; }
+                        @if (saved is { Count: > 0 })
+                        {
+                            <div class="mb-3">
+                                <label class="form-label small text-muted">Use a saved address</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (var a in saved)
+                                    {
+                                        <button type="button" class="btn btn-sm btn-outline-dark js-addr"
+                                                data-name="@a.ContactName" data-phone="@a.PhoneNumber"
+                                                data-line1="@a.Line1" data-line2="@a.Line2"
+                                                data-city="@a.City" data-state="@a.State" data-pin="@a.PostalCode">
+                                            @a.ContactName — @a.City @(a.IsDefault ? "★" : "")
+                                        </button>
+                                    }
+                                    <a class="btn btn-sm btn-link" asp-controller="AddressBook" asp-action="Edit">+ New</a>
+                                </div>
+                            </div>
+                        }
+                        <div class="row">
+                            <div class="col-sm-6 mb-3">
+                                <label asp-for="Form.ContactName" class="form-label"></label>
+                                <input asp-for="Form.ContactName" class="form-control" />
+                                <span asp-validation-for="Form.ContactName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <label asp-for="Form.PhoneNumber" class="form-label"></label>
+                                <input asp-for="Form.PhoneNumber" class="form-control" />
+                                <span asp-validation-for="Form.PhoneNumber" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Form.Line1" class="form-label"></label>
+                            <input asp-for="Form.Line1" class="form-control" />
+                            <span asp-validation-for="Form.Line1" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Form.Line2" class="form-label"></label>
+                            <input asp-for="Form.Line2" class="form-control" />
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 mb-3">
+                                <label asp-for="Form.City" class="form-label"></label>
+                                <input asp-for="Form.City" class="form-control" />
+                                <span asp-validation-for="Form.City" class="text-danger small"></span>
+                            </div>
+                            <div class="col-sm-4 mb-3">
+                                <label asp-for="Form.State" class="form-label"></label>
+                                <input asp-for="Form.State" class="form-control" />
+                                <span asp-validation-for="Form.State" class="text-danger small"></span>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <label asp-for="Form.PostalCode" class="form-label"></label>
+                                <input asp-for="Form.PostalCode" class="form-control" />
+                                <span asp-validation-for="Form.PostalCode" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="h6 mb-3">Payment Method</h2>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="Form.PaymentMethod" value="CashOnDelivery" id="pmCod" checked />
+                            <label class="form-check-label" for="pmCod">Cash on Delivery</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="Form.PaymentMethod" value="Razorpay" id="pmOnline" />
+                            <label class="form-check-label" for="pmOnline">Razorpay (Card / Net Banking)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="Form.PaymentMethod" value="PhonePe" id="pmPhonePe" />
+                            <label class="form-check-label" for="pmPhonePe">PhonePe</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="Form.PaymentMethod" value="Upi" id="pmUpi" />
+                            <label class="form-check-label" for="pmUpi">UPI</label>
+                        </div>
+                        <small class="text-muted">Online payment is processed on the next screen (dev simulator until live keys are set).</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="h6 mb-3">Order Summary</h2>
+                        @foreach (var line in Model.Cart.Lines)
+                        {
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>@line.ProductName <span class="text-muted">× @line.Quantity</span></span>
+                                <span>₹@line.LineTotal.ToString("N0")</span>
+                            </div>
+                        }
+                        <hr />
+
+                        @if (TempData["CouponMsg"] is string cmsg) { <div class="alert alert-success py-1 px-2 small">@cmsg</div> }
+                        @if (TempData["CouponError"] is string cerr) { <div class="alert alert-danger py-1 px-2 small">@cerr</div> }
+
+                        @if (string.IsNullOrEmpty(Model.AppliedCouponCode))
+                        {
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="text" id="couponCode" class="form-control" placeholder="Coupon code" />
+                                <button type="button" id="applyCoupon" class="btn btn-outline-dark">Apply</button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="d-flex justify-content-between align-items-center mb-2 small">
+                                <span class="badge bg-success">@Model.AppliedCouponCode</span>
+                                <button type="button" id="removeCoupon" class="btn btn-link btn-sm text-danger p-0">Remove</button>
+                            </div>
+                        }
+
+                        <div class="d-flex justify-content-between"><span>Subtotal</span><span>₹@Model.SubTotal.ToString("N0")</span></div>
+                        @if (Model.DiscountAmount > 0)
+                        {
+                            <div class="d-flex justify-content-between text-success"><span>Discount</span><span>-₹@Model.DiscountAmount.ToString("N0")</span></div>
+                        }
+                        <div class="d-flex justify-content-between"><span>Shipping</span><span>@(Model.ShippingFee == 0 ? "FREE" : "₹" + Model.ShippingFee.ToString("N0"))</span></div>
+                        <hr />
+                        <div class="d-flex justify-content-between fw-bold fs-5"><span>Total</span><span>₹@Model.GrandTotal.ToString("N0")</span></div>
+                        <button type="submit" class="btn btn-accent w-100 mt-3">Place Order</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    @* Separate forms for coupon apply/remove (kept outside the main checkout form) *@
+    <form id="applyCouponForm" asp-action="ApplyCoupon" method="post" class="d-none">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="code" id="applyCouponCode" />
+    </form>
+    <form id="removeCouponForm" asp-action="RemoveCoupon" method="post" class="d-none">
+        @Html.AntiForgeryToken()
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('applyCoupon')?.addEventListener('click', function () {
+            var code = (document.getElementById('couponCode').value || '').trim();
+            if (!code) return;
+            document.getElementById('applyCouponCode').value = code;
+            document.getElementById('applyCouponForm').submit();
+        });
+        document.getElementById('removeCoupon')?.addEventListener('click', function () {
+            document.getElementById('removeCouponForm').submit();
+        });
+        // Saved-address prefill
+        document.querySelectorAll('.js-addr').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var d = btn.dataset, set = function (id, v) { var el = document.getElementById(id); if (el) el.value = v || ''; };
+                set('Form_ContactName', d.name); set('Form_PhoneNumber', d.phone);
+                set('Form_Line1', d.line1); set('Form_Line2', d.line2);
+                set('Form_City', d.city); set('Form_State', d.state); set('Form_PostalCode', d.pin);
+            });
+        });
+    </script>
+}

@@ -1,0 +1,90 @@
+@model AdminOrderDetailVm
+@{
+    ViewData["Title"] = $"Order {Model.Order.OrderNumber}";
+    var o = Model.Order;
+}
+
+<a asp-action="Index" class="btn btn-sm btn-link px-0 mb-2">← All orders</a>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">@o.OrderNumber</span>
+                <partial name="_OrderStatusBadge" model="o.Status" />
+            </div>
+            <div class="card-body p-0">
+                <table class="table mb-0 align-middle">
+                    <thead><tr><th class="ps-3">Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+                    <tbody>
+                    @foreach (var line in o.Lines)
+                    {
+                        <tr>
+                            <td class="ps-3">@line.ProductName<br /><small class="text-muted">@line.ColorName @(string.IsNullOrEmpty(line.SizeName) ? "" : "/ " + line.SizeName)</small></td>
+                            <td>@line.Quantity</td>
+                            <td>₹@line.UnitPrice.ToString("N0")</td>
+                            <td>₹@line.LineTotal.ToString("N0")</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between"><span>Subtotal</span><span>₹@o.SubTotal.ToString("N0")</span></div>
+                <div class="d-flex justify-content-between"><span>Shipping</span><span>@(o.ShippingFee == 0 ? "FREE" : "₹" + o.ShippingFee.ToString("N0"))</span></div>
+                <hr />
+                <div class="d-flex justify-content-between fw-bold"><span>Total</span><span>₹@o.GrandTotal.ToString("N0")</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-header bg-white fw-semibold">Update status</div>
+            <div class="card-body">
+                <form asp-action="UpdateStatus" method="post" class="d-flex gap-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="orderNumber" value="@o.OrderNumber" />
+                    <select name="status" class="form-select form-select-sm">
+                        @foreach (var s in Enum.GetValues<OrderStatus>())
+                        {
+                            <option value="@s" selected="@(s == o.Status)">@s</option>
+                        }
+                    </select>
+                    <button class="btn btn-sm btn-accent">Update</button>
+                </form>
+
+                @if (o.PaymentStatus == PaymentStatus.Paid)
+                {
+                    <form asp-action="Refund" method="post" class="mt-3"
+                          onsubmit="return confirm('Refund this order?');">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="orderNumber" value="@o.OrderNumber" />
+                        <button class="btn btn-sm btn-outline-danger w-100">Refund payment</button>
+                    </form>
+                }
+                <a class="btn btn-sm btn-outline-dark w-100 mt-3" asp-controller="Shipments" asp-action="Manage" asp-route-id="@o.OrderNumber">Manage shipment</a>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header bg-white fw-semibold">Customer</div>
+            <div class="card-body small">
+                <p class="mb-1">@Model.CustomerName</p>
+                <p class="mb-0 text-muted">@Model.CustomerEmail</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-white fw-semibold">Shipping &amp; payment</div>
+            <div class="card-body small">
+                <p class="mb-1">@o.ShipToName · @o.ShipToPhone</p>
+                <p class="text-muted mb-2">@o.ShipToAddress</p>
+                <p class="mb-0"><strong>@o.PaymentMethod</strong> — @o.PaymentStatus</p>
+            </div>
+        </div>
+    </div>
+</div>

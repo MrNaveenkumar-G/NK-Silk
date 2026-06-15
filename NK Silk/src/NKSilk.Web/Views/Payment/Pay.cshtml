@@ -1,0 +1,89 @@
+@model PaymentSessionVm
+@{
+    ViewData["Title"] = "Payment";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body p-4 text-center">
+                    <h1 class="h4 mb-1">Complete your payment</h1>
+                    <p class="text-muted small">Order @Model.OrderNumber</p>
+                    <div class="display-6 my-3">₹@Model.Amount.ToString("N0")</div>
+
+                    @if (TempData["PaymentError"] is string err)
+                    {
+                        <div class="alert alert-danger py-2 small">@err</div>
+                    }
+
+                    <!-- The callback form is shared by Razorpay's handler and the dev simulator. -->
+                    <form id="payForm" asp-controller="Payment" asp-action="Callback" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="orderNumber" value="@Model.OrderNumber" />
+                        <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id" />
+                        <input type="hidden" name="razorpay_order_id" id="razorpay_order_id" value="@Model.GatewayOrderId" />
+                        <input type="hidden" name="razorpay_signature" id="razorpay_signature" />
+                    </form>
+
+                    @if (Model.IsLive)
+                    {
+                        <button id="rzpBtn" class="btn btn-accent w-100">Pay with Razorpay</button>
+                        <p class="text-muted small mt-3 mb-0">UPI · Cards · Net Banking · Wallets</p>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info small text-start">
+                            <strong>Developer simulation mode.</strong>
+                            No Razorpay keys are configured, so this simulates a successful payment.
+                            Add keys under <code>Razorpay</code> in <code>appsettings.json</code> to use the real gateway.
+                        </div>
+                        <button id="simBtn" class="btn btn-accent w-100">Simulate Successful Payment</button>
+                    }
+                    <a asp-controller="Orders" asp-action="Index" class="btn btn-link btn-sm mt-2">Pay later / view orders</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+@if (Model.IsLive)
+{
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <text>
+    <script>
+        var options = {
+            key: "@Model.KeyId",
+            amount: @Model.AmountPaise,
+            currency: "@Model.Currency",
+            name: "NK Silk",
+            description: "Order @Model.OrderNumber",
+            order_id: "@Model.GatewayOrderId",
+            prefill: { name: "@Model.CustomerName", email: "@Model.CustomerEmail" },
+            theme: { color: "#4a1f2b" },
+            handler: function (response) {
+                document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+                document.getElementById('razorpay_signature').value = response.razorpay_signature;
+                document.getElementById('payForm').submit();
+            }
+        };
+        var rzp = new Razorpay(options);
+        document.getElementById('rzpBtn').onclick = function (e) { e.preventDefault(); rzp.open(); };
+    </script>
+    </text>
+}
+else
+{
+    <text>
+    <script>
+        document.getElementById('simBtn').onclick = function () {
+            document.getElementById('razorpay_payment_id').value = 'pay_sim_' + Date.now();
+            document.getElementById('razorpay_signature').value = 'simulated';
+            document.getElementById('payForm').submit();
+        };
+    </script>
+    </text>
+}
+}

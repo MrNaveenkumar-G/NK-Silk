@@ -1,0 +1,66 @@
+@{
+    string Active(string controller) =>
+        string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), controller, StringComparison.OrdinalIgnoreCase)
+            ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · NK Silk Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body class="admin-body">
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <div class="admin-brand">NK<span class="text-accent">Silk</span> <small>Admin</small></div>
+            <nav class="nav flex-column">
+                <a class="nav-link @Active("Dashboard")" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                <a class="nav-link @Active("Products")" asp-area="Admin" asp-controller="Products" asp-action="Index">Products</a>
+                <a class="nav-link @Active("Categories")" asp-area="Admin" asp-controller="Categories" asp-action="Index">Categories</a>
+                <a class="nav-link @Active("Inventory")" asp-area="Admin" asp-controller="Inventory" asp-action="Index">Inventory</a>
+                <a class="nav-link @Active("Orders")" asp-area="Admin" asp-controller="Orders" asp-action="Index">Orders</a>
+                <a class="nav-link @Active("Shipments")" asp-area="Admin" asp-controller="Shipments" asp-action="Index">Shipments</a>
+                <a class="nav-link @Active("Returns")" asp-area="Admin" asp-controller="Returns" asp-action="Index">Returns</a>
+                <a class="nav-link @Active("Coupons")" asp-area="Admin" asp-controller="Coupons" asp-action="Index">Coupons</a>
+                <a class="nav-link @Active("Offers")" asp-area="Admin" asp-controller="Offers" asp-action="Index">Offers</a>
+                <a class="nav-link @Active("Combos")" asp-area="Admin" asp-controller="Combos" asp-action="Index">Combo Packs</a>
+                <a class="nav-link @Active("Reviews")" asp-area="Admin" asp-controller="Reviews" asp-action="Index">Reviews</a>
+                <a class="nav-link @Active("Support")" asp-area="Admin" asp-controller="Support" asp-action="Index">Support</a>
+                <a class="nav-link @Active("Customers")" asp-area="Admin" asp-controller="Customers" asp-action="Index">Customers</a>
+                <a class="nav-link @Active("Reports")" asp-area="Admin" asp-controller="Reports" asp-action="Index">Reports</a>
+                <a class="nav-link @Active("Access")" asp-area="Admin" asp-controller="Access" asp-action="Roles">Roles &amp; Audit</a>
+                <hr class="text-white-50" />
+                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">↩ Back to store</a>
+            </nav>
+        </aside>
+        <div class="admin-main">
+            <header class="admin-topbar d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">@ViewData["Title"]</span>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="small text-muted">@User.Identity?.Name</span>
+                    <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                        <button class="btn btn-sm btn-outline-secondary">Logout</button>
+                    </form>
+                </div>
+            </header>
+            <main class="admin-content">
+                @if (TempData["Success"] is string ok)
+                {
+                    <div class="alert alert-success py-2">@ok</div>
+                }
+                @if (TempData["Error"] is string err)
+                {
+                    <div class="alert alert-danger py-2">@err</div>
+                }
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

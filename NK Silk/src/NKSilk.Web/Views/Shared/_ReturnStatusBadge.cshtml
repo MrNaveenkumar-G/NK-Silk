@@ -1,0 +1,13 @@
+@model ReturnStatus
+@{
+    var css = Model switch
+    {
+        ReturnStatus.Requested => "bg-secondary",
+        ReturnStatus.Approved => "bg-info text-dark",
+        ReturnStatus.Rejected => "bg-danger",
+        ReturnStatus.PickedUp => "bg-primary",
+        ReturnStatus.Refunded => "bg-success",
+        _ => "bg-secondary"
+    };
+}
+<span class="badge @css">@Model</span>

@@ -1,0 +1,73 @@
+@model ShipmentDetailVm
+@{
+    ViewData["Title"] = $"Track {Model.OrderNumber}";
+    string Label(ShipmentStatus s) => s switch
+    {
+        ShipmentStatus.LabelCreated => "Label created",
+        ShipmentStatus.PickedUp => "Picked up",
+        ShipmentStatus.InTransit => "In transit",
+        ShipmentStatus.OutForDelivery => "Out for delivery",
+        ShipmentStatus.Delivered => "Delivered",
+        ShipmentStatus.Failed => "Delivery failed",
+        _ => s.ToString()
+    };
+}
+<div class="container py-4" style="max-width:760px">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-controller="Orders" asp-action="Index">My Orders</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderNumber">@Model.OrderNumber</a></li>
+            <li class="breadcrumb-item active">Tracking</li>
+        </ol>
+    </nav>
+
+    <h1 class="h4 mb-3">Track order @Model.OrderNumber</h1>
+
+    @if (!Model.Exists)
+    {
+        <div class="alert alert-light border text-center py-5">
+            Your order hasn't shipped yet. We'll notify you as soon as it's on the way.
+        </div>
+    }
+    else
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="fw-semibold">@Model.Courier</div>
+                        <div class="small text-muted">Tracking #@Model.TrackingNumber</div>
+                    </div>
+                    <span class="badge bg-primary align-self-start">@Label(Model.Status)</span>
+                </div>
+                @if (Model.EstimatedDeliveryUtc is not null && Model.Status != ShipmentStatus.Delivered)
+                {
+                    <p class="small mt-2 mb-0">Estimated delivery: <strong>@Model.EstimatedDeliveryUtc.Value.ToLocalTime().ToString("dd MMM yyyy")</strong></p>
+                }
+                @if (Model.DeliveredAtUtc is not null)
+                {
+                    <p class="small mt-2 mb-0 text-success">Delivered on @Model.DeliveredAtUtc.Value.ToLocalTime().ToString("dd MMM yyyy, h:mm tt")</p>
+                }
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-white fw-semibold">Tracking history</div>
+            <ul class="list-group list-group-flush">
+                @foreach (var e in Model.Events)
+                {
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-semibold">@Label(e.Status)</span>
+                            <small class="text-muted">@e.OccurredAtUtc.ToLocalTime().ToString("dd MMM, h:mm tt")</small>
+                        </div>
+                        @if (!string.IsNullOrEmpty(e.Note))
+                        {
+                            <div class="small text-muted">@e.Note</div>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</div>

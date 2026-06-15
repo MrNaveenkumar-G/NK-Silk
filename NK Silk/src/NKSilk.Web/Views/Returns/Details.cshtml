@@ -1,0 +1,62 @@
+@model ReturnDetailVm
+@{
+    ViewData["Title"] = $"Return {Model.ReturnNumber}";
+}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-action="Index">My Returns</a></li>
+            <li class="breadcrumb-item active">@Model.ReturnNumber</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 mb-0">Return @Model.ReturnNumber</h1>
+        <partial name="_ReturnStatusBadge" model="Model.Status" />
+    </div>
+    <p class="text-muted small">
+        Requested @Model.RequestedAtUtc.ToLocalTime().ToString("dd MMM yyyy, h:mm tt")
+        · for order <a asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderNumber">@Model.OrderNumber</a>
+    </p>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table align-middle mb-0">
+                        <thead><tr><th>Item</th><th>Qty</th><th>Refund</th></tr></thead>
+                        <tbody>
+                            @foreach (var line in Model.Lines)
+                            {
+                                <tr>
+                                    <td>@line.ProductName<br /><small class="text-muted">@line.ColorName @(string.IsNullOrEmpty(line.SizeName) ? "" : "/ " + line.SizeName)</small></td>
+                                    <td>@line.Quantity</td>
+                                    <td>₹@line.LineTotal.ToString("N0")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2 class="h6">Summary</h2>
+                    <div class="d-flex justify-content-between"><span>Reason</span><span>@Model.Reason</span></div>
+                    <div class="d-flex justify-content-between fw-bold"><span>Refund amount</span><span>₹@Model.RefundAmount.ToString("N0")</span></div>
+                    @if (!string.IsNullOrEmpty(Model.Comments))
+                    {
+                        <hr />
+                        <p class="small text-muted mb-0">“@Model.Comments”</p>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ResolutionNote))
+                    {
+                        <hr />
+                        <p class="small mb-0"><strong>Update:</strong> @Model.ResolutionNote</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

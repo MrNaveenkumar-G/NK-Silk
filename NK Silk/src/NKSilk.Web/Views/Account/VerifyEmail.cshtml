@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "Email verification";
+    var ok = ViewData["Verified"] is true;
+}
+<div class="container py-5 text-center">
+    @if (ok)
+    {
+        <div class="display-6 mb-2">✅</div>
+        <h1 class="h4">Email verified</h1>
+        <p class="text-muted">Thanks — your email address is now confirmed.</p>
+    }
+    else
+    {
+        <div class="display-6 mb-2">⚠️</div>
+        <h1 class="h4">Link invalid or expired</h1>
+        <p class="text-muted">This verification link isn't valid. Try registering again or contact support.</p>
+    }
+    <a class="btn btn-accent mt-2" asp-controller="Home" asp-action="Index">Continue shopping</a>
+</div>

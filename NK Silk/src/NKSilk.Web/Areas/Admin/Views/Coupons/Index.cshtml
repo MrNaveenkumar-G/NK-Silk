@@ -1,0 +1,34 @@
+@model IReadOnlyList<AdminCouponVm>
+@{
+    ViewData["Title"] = "Coupons";
+}
+<div class="d-flex justify-content-end mb-3">
+    <a class="btn btn-sm btn-accent" asp-action="Edit">+ New Coupon</a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table mb-0 align-middle">
+            <thead><tr><th class="ps-3">Code</th><th>Discount</th><th>Min order</th><th>Valid</th><th>Used</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td class="ps-3 fw-semibold">@c.Code</td>
+                    <td>@(c.DiscountType == DiscountType.Percentage ? c.DiscountValue + "%" : "₹" + c.DiscountValue.ToString("N0"))
+                        @(c.MaxDiscountAmount is decimal m ? $"(max ₹{m:N0})" : "")</td>
+                    <td>@(c.MinOrderAmount is decimal mo ? "₹" + mo.ToString("N0") : "—")</td>
+                    <td>@c.StartsAtUtc.ToString("dd MMM") – @c.EndsAtUtc.ToString("dd MMM yyyy")</td>
+                    <td>@c.TimesUsed@(c.UsageLimit is int l ? "/" + l : "")</td>
+                    <td>@if (c.IsActive) { <span class="badge bg-success">Active</span> } else { <span class="badge bg-secondary">Off</span> }</td>
+                    <td><a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@c.Id">Edit</a></td>
+                </tr>
+            }
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="7" class="text-center text-muted py-4">No coupons yet.</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

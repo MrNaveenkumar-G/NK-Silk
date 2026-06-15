@@ -1,0 +1,79 @@
+@model AdminOfferVm
+@{
+    ViewData["Title"] = Model.Id == 0 ? "New offer" : "Edit offer";
+}
+<a asp-action="Index" class="btn btn-sm btn-link px-0 mb-2">← All offers</a>
+<h1 class="h5 mb-3">@ViewData["Title"]</h1>
+
+<form asp-action="Edit" method="post" style="max-width:720px">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+
+    <div class="row g-3">
+        <div class="col-md-8">
+            <label class="form-label" asp-for="Title"></label>
+            <input class="form-control" asp-for="Title" />
+            <span asp-validation-for="Title" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" asp-for="Slug"></label>
+            <input class="form-control" asp-for="Slug" placeholder="auto from title" />
+        </div>
+        <div class="col-12">
+            <label class="form-label" asp-for="Description"></label>
+            <input class="form-control" asp-for="Description" />
+        </div>
+        <div class="col-md-8">
+            <label class="form-label" asp-for="BannerImageUrl"></label>
+            <input class="form-control" asp-for="BannerImageUrl" placeholder="/img/offer-banner.jpg (optional)" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label" asp-for="OfferType"></label>
+            <select class="form-select" asp-for="OfferType" asp-items="Html.GetEnumSelectList<NKSilk.Domain.Enums.OfferType>()"></select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label" asp-for="Value"></label>
+            <input class="form-control" asp-for="Value" type="number" step="0.01" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" asp-for="Scope"></label>
+            <select class="form-select" asp-for="Scope" asp-items="Html.GetEnumSelectList<NKSilk.Domain.Enums.OfferScope>()"></select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" asp-for="CategoryId">Category (if scope = Category)</label>
+            <select class="form-select" asp-for="CategoryId">
+                <option value="">— none —</option>
+                @foreach (var c in Model.Categories)
+                {
+                    <option value="@c.Id">@c.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" asp-for="ProductId">Product id (if scope = Product)</label>
+            <input class="form-control" asp-for="ProductId" type="number" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" asp-for="StartsAtUtc"></label>
+            <input class="form-control" asp-for="StartsAtUtc" type="date" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" asp-for="EndsAtUtc"></label>
+            <input class="form-control" asp-for="EndsAtUtc" type="date" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label" asp-for="Priority"></label>
+            <input class="form-control" asp-for="Priority" type="number" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <div class="form-check"><input class="form-check-input" asp-for="IsActive" /><label class="form-check-label" asp-for="IsActive">Active</label></div>
+        </div>
+    </div>
+
+    <div class="mt-3 d-flex gap-2">
+        <button type="submit" class="btn btn-accent">Save offer</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+    </div>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

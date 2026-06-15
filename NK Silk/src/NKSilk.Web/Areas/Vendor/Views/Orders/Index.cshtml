@@ -1,0 +1,30 @@
+@model IReadOnlyList<VendorOrderItemVm>
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table mb-0 align-middle">
+            <thead><tr><th class="ps-3">Order #</th><th>Date</th><th>Product</th><th>Variant</th><th>Qty</th><th>Line total</th><th>Status</th></tr></thead>
+            <tbody>
+            @foreach (var i in Model)
+            {
+                <tr>
+                    <td class="ps-3 fw-semibold">@i.OrderNumber</td>
+                    <td class="small">@i.PlacedAtUtc.ToLocalTime().ToString("dd MMM yyyy")</td>
+                    <td>@i.ProductName</td>
+                    <td class="small">@i.ColorName @(string.IsNullOrEmpty(i.SizeName) ? "" : "/ " + i.SizeName)</td>
+                    <td>@i.Quantity</td>
+                    <td>₹@i.LineTotal.ToString("N0")</td>
+                    <td><partial name="_OrderStatusBadge" model="i.Status" /></td>
+                </tr>
+            }
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="7" class="text-center text-muted py-4">No orders for your products yet.</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

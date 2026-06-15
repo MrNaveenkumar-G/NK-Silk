@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "My Account";
+}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <h1 class="h4 mb-4">My Account</h1>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4 text-muted">Name</dt>
+                        <dd class="col-sm-8">@User.Identity?.Name</dd>
+                        <dt class="col-sm-4 text-muted">Email</dt>
+                        <dd class="col-sm-8">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</dd>
+                    </dl>
+                </div>
+            </div>
+            <p class="text-muted small mt-3">Order history, saved addresses and returns arrive in the next build phase.</p>
+        </div>
+    </div>
+</div>

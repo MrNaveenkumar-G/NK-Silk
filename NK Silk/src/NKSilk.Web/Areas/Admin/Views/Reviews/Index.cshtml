@@ -1,0 +1,63 @@
+@model IReadOnlyList<AdminReviewVm>
+@{
+    ViewData["Title"] = "Reviews";
+    var approved = ViewData["Approved"] as bool?;
+}
+
+<div class="mb-3 d-flex gap-1">
+    <a class="btn btn-sm @(approved == false ? "btn-accent" : "btn-outline-secondary")" asp-action="Index" asp-route-approved="false">Pending</a>
+    <a class="btn btn-sm @(approved == true ? "btn-accent" : "btn-outline-secondary")" asp-action="Index" asp-route-approved="true">Approved</a>
+    <a class="btn btn-sm @(approved == null ? "btn-accent" : "btn-outline-secondary")" asp-action="Index">All</a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table mb-0 align-middle">
+            <thead><tr><th class="ps-3">Product</th><th>Rating</th><th>Review</th><th>By</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td class="ps-3">@r.ProductName</td>
+                    <td class="text-warning text-nowrap">@(new string('★', r.Rating))</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(r.Title)) { <strong>@r.Title</strong><br /> }
+                        <small>@r.Comment</small>
+                    </td>
+                    <td class="small">@r.CustomerName<br /><span class="text-muted">@r.CreatedAtUtc.ToLocalTime().ToString("dd MMM yyyy")</span></td>
+                    <td>@if (r.IsApproved) { <span class="badge bg-success">Approved</span> } else { <span class="badge bg-warning text-dark">Pending</span> }</td>
+                    <td class="text-nowrap">
+                        @if (!r.IsApproved)
+                        {
+                            <form asp-action="SetApproval" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@r.Id" />
+                                <input type="hidden" name="approved" value="true" />
+                                <button class="btn btn-sm btn-success">Approve</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="SetApproval" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@r.Id" />
+                                <input type="hidden" name="approved" value="false" />
+                                <button class="btn btn-sm btn-outline-secondary">Unpublish</button>
+                            </form>
+                        }
+                        <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Delete this review?');">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@r.Id" />
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="6" class="text-center text-muted py-4">No reviews in this view.</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

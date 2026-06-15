@@ -1,0 +1,47 @@
+@model IReadOnlyList<ComboCardVm>
+@{
+    ViewData["Title"] = "Combo Packs";
+}
+<div class="container py-4">
+    <h1 class="h4 mb-4">Combo Packs — buy together &amp; save</h1>
+
+    @if (TempData["Success"] is string ok) { <div class="alert alert-success py-2">@ok</div> }
+    @if (TempData["Error"] is string err) { <div class="alert alert-danger py-2">@err</div> }
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-light border text-center py-5">No combo packs available right now.</div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var c in Model)
+            {
+                <div class="col-6 col-lg-3">
+                    <div class="card nk-product-card h-100">
+                        <a asp-action="Details" asp-route-id="@c.Slug" class="text-decoration-none">
+                            <div class="position-relative">
+                                <img src="@(c.ImageUrl ?? "/img/product-placeholder.svg")" class="card-img-top" alt="@c.Name" />
+                                @if (c.Savings > 0)
+                                {
+                                    <span class="badge bg-danger position-absolute top-0 start-0 m-2">SAVE ₹@c.Savings.ToString("N0")</span>
+                                }
+                            </div>
+                            <div class="card-body">
+                                <h3 class="h6 text-dark mb-1 nk-clamp-2">@c.Name</h3>
+                                <small class="text-muted">@c.ItemCount items</small>
+                                <div class="d-flex align-items-baseline gap-2 mt-1">
+                                    <span class="fw-bold">₹@c.ComboPrice.ToString("N0")</span>
+                                    @if (c.RegularPrice > c.ComboPrice)
+                                    {
+                                        <small class="text-muted text-decoration-line-through">₹@c.RegularPrice.ToString("N0")</small>
+                                    }
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

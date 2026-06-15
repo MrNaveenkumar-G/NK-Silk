@@ -1,0 +1,39 @@
+@model IReadOnlyList<AdminShipmentListItemVm>
+@{
+    ViewData["Title"] = "Shipments";
+    var status = ViewData["Status"] as ShipmentStatus?;
+}
+
+<div class="mb-3 d-flex gap-1 flex-wrap">
+    <a class="btn btn-sm @(status == null ? "btn-accent" : "btn-outline-secondary")" asp-action="Index">All</a>
+    @foreach (var s in Enum.GetValues<ShipmentStatus>())
+    {
+        <a class="btn btn-sm @(status == s ? "btn-accent" : "btn-outline-secondary")" asp-action="Index" asp-route-status="@s">@s</a>
+    }
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table mb-0 align-middle">
+            <thead><tr><th class="ps-3">Order #</th><th>Customer</th><th>Courier</th><th>Tracking #</th><th>Shipped</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var s in Model)
+            {
+                <tr>
+                    <td class="ps-3 fw-semibold">@s.OrderNumber</td>
+                    <td>@s.CustomerName</td>
+                    <td>@s.Courier</td>
+                    <td class="small">@s.TrackingNumber</td>
+                    <td class="small">@(s.ShippedAtUtc?.ToLocalTime().ToString("dd MMM yyyy") ?? "—")</td>
+                    <td><span class="badge bg-primary">@s.Status</span></td>
+                    <td><a class="btn btn-sm btn-outline-dark" asp-action="Manage" asp-route-id="@s.OrderNumber">Manage</a></td>
+                </tr>
+            }
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="7" class="text-center text-muted py-4">No shipments in this view.</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

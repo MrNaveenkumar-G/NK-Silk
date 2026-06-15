@@ -1,0 +1,92 @@
+@model OrderDetailVm
+@{
+    ViewData["Title"] = $"Order {Model.OrderNumber}";
+}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-controller="Orders" asp-action="Index">My Orders</a></li>
+            <li class="breadcrumb-item active">@Model.OrderNumber</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 mb-0">Order @Model.OrderNumber</h1>
+        <partial name="_OrderStatusBadge" model="Model.Status" />
+    </div>
+    <p class="text-muted small">Placed on @Model.PlacedAtUtc.ToLocalTime().ToString("dd MMM yyyy, h:mm tt")</p>
+
+    @if (TempData["Error"] is string err)
+    {
+        <div class="alert alert-danger py-2">@err</div>
+    }
+
+    @if (Model.ActiveReturnNumber is not null)
+    {
+        <div class="alert alert-info py-2 d-flex justify-content-between align-items-center">
+            <span>A return is in progress for this order.</span>
+            <a class="btn btn-sm btn-outline-dark" asp-controller="Returns" asp-action="Details" asp-route-id="@Model.ActiveReturnNumber">View return</a>
+        </div>
+    }
+    else if (Model.CanRequestReturn)
+    {
+        <div class="mb-3">
+            <a class="btn btn-sm btn-outline-dark" asp-controller="Returns" asp-action="Create" asp-route-id="@Model.OrderNumber">↩ Return items</a>
+        </div>
+    }
+
+    @if (Model.Status != OrderStatus.Pending && Model.Status != OrderStatus.Cancelled)
+    {
+        <div class="mb-3">
+            <a class="btn btn-sm btn-outline-dark" asp-controller="Tracking" asp-action="Order" asp-route-id="@Model.OrderNumber">🚚 Track shipment</a>
+            <a class="btn btn-sm btn-outline-secondary" asp-controller="Support" asp-action="Create" asp-route-orderNumber="@Model.OrderNumber">Need help?</a>
+        </div>
+    }
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table align-middle mb-0">
+                        <thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+                        <tbody>
+                            @foreach (var line in Model.Lines)
+                            {
+                                <tr>
+                                    <td>@line.ProductName<br /><small class="text-muted">@line.ColorName @(string.IsNullOrEmpty(line.SizeName) ? "" : "/ " + line.SizeName)</small></td>
+                                    <td>@line.Quantity</td>
+                                    <td>₹@line.UnitPrice.ToString("N0")</td>
+                                    <td>₹@line.LineTotal.ToString("N0")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2 class="h6">Payment Summary</h2>
+                    <div class="d-flex justify-content-between"><span>Subtotal</span><span>₹@Model.SubTotal.ToString("N0")</span></div>
+                    <div class="d-flex justify-content-between"><span>Shipping</span><span>@(Model.ShippingFee == 0 ? "FREE" : "₹" + Model.ShippingFee.ToString("N0"))</span></div>
+                    @if (Model.DiscountAmount > 0)
+                    {
+                        <div class="d-flex justify-content-between text-success"><span>Discount</span><span>-₹@Model.DiscountAmount.ToString("N0")</span></div>
+                    }
+                    <hr />
+                    <div class="d-flex justify-content-between fw-bold"><span>Total</span><span>₹@Model.GrandTotal.ToString("N0")</span></div>
+                    <p class="small text-muted mt-2 mb-0">@Model.PaymentMethod · @Model.PaymentStatus</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="h6">Shipping Address</h2>
+                    <p class="small mb-1">@Model.ShipToName</p>
+                    <p class="small mb-1">@Model.ShipToPhone</p>
+                    <p class="small text-muted mb-0">@Model.ShipToAddress</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

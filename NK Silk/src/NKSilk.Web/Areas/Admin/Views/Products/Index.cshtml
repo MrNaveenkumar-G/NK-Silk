@@ -1,0 +1,49 @@
+@model IReadOnlyList<AdminProductListItemVm>
+@{
+    ViewData["Title"] = "Products";
+    var search = ViewData["Search"] as string;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <form method="get" class="d-flex" style="max-width:360px">
+        <input type="search" name="search" value="@search" class="form-control form-control-sm" placeholder="Search name or SKU" />
+        <button class="btn btn-sm btn-outline-secondary ms-1">Search</button>
+    </form>
+    <a class="btn btn-sm btn-accent" asp-action="Edit">+ New Product</a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table mb-0 align-middle">
+            <thead><tr><th class="ps-3">Name</th><th>Category</th><th>Price</th><th>Variants</th><th>Stock</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td class="ps-3 fw-semibold">@p.Name @(p.IsFeatured ? "⭐" : "")</td>
+                    <td>@p.CategoryName</td>
+                    <td>₹@p.BasePrice.ToString("N0")</td>
+                    <td>@p.VariantCount</td>
+                    <td>@p.TotalStock</td>
+                    <td>
+                        @if (p.IsActive) { <span class="badge bg-success">Active</span> }
+                        else { <span class="badge bg-secondary">Hidden</span> }
+                    </td>
+                    <td class="text-nowrap">
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@p.Id">Edit</a>
+                        <form asp-action="Toggle" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@p.Id" />
+                            <button class="btn btn-sm btn-outline-dark">@(p.IsActive ? "Hide" : "Show")</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="7" class="text-center text-muted py-4">No products found.</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Your_strong_Pass123"
+    ports:
+      - "1433:1433"
+    volumes:
+      - nksilk-sql:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $$MSSQL_SA_PASSWORD -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      retries: 10
+
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Server=db;Database=NKSilkDb;User Id=sa;Password=Your_strong_Pass123;TrustServerCertificate=True;MultipleActiveResultSets=true"
+      # Optional integrations — leave blank to run gateways/email/SMS in simulator mode.
+      Jwt__Key: "change-me-to-a-long-random-secret-in-production-000000000000"
+      # Cdn__BaseUrl: "https://cdn.example.com"
+      # Email__SmtpHost: "smtp.example.com"
+      # Sms__ApiUrl: "https://sms.example.com/send"
+    ports:
+      - "8080:8080"
+
+volumes:
+  nksilk-sql:

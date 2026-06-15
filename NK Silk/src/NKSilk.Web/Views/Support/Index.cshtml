@@ -1,0 +1,43 @@
+@model IReadOnlyList<SupportTicketListItemVm>
+@{
+    ViewData["Title"] = "Support";
+}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h4 mb-0">Support</h1>
+        <a class="btn btn-accent btn-sm" asp-action="Create">New ticket</a>
+    </div>
+
+    @if (TempData["Success"] is string ok)
+    {
+        <div class="alert alert-success py-2">@ok</div>
+    }
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-light border text-center py-5">
+            No support tickets yet. <a asp-action="Create">Raise a query →</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead><tr><th>Ticket #</th><th>Subject</th><th>Category</th><th>Updated</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var t in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@t.TicketNumber</td>
+                            <td>@t.Subject</td>
+                            <td class="small">@t.Category</td>
+                            <td class="small">@t.LastActivityUtc.ToLocalTime().ToString("dd MMM yyyy")</td>
+                            <td><span class="badge bg-secondary">@t.Status</span></td>
+                            <td><a class="btn btn-sm btn-outline-dark" asp-action="Details" asp-route-id="@t.TicketNumber">Open</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

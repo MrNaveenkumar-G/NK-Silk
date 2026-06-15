@@ -1,0 +1,47 @@
+@model ProductCardVm
+@inject NKSilk.Application.Common.Interfaces.IMediaUrlResolver Media
+<div class="card nk-product-card h-100">
+    <a asp-controller="Catalog" asp-action="Details" asp-route-id="@Model.Slug" class="text-decoration-none">
+        <div class="position-relative">
+            <img src="@Media.Resolve(Model.PrimaryImageUrl)" class="card-img-top" alt="@Model.Name" />
+            @if (Model.HasOffer)
+            {
+                <span class="badge bg-danger position-absolute top-0 start-0 m-2">OFFER</span>
+            }
+            else if (Model.DiscountPercent > 0)
+            {
+                <span class="badge bg-danger position-absolute top-0 start-0 m-2">@Model.DiscountPercent% OFF</span>
+            }
+        </div>
+        <div class="card-body">
+            @if (!string.IsNullOrEmpty(Model.FabricType))
+            {
+                <small class="text-muted text-uppercase">@Model.FabricType</small>
+            }
+            <h3 class="h6 text-dark mb-1 nk-clamp-2">@Model.Name</h3>
+            <div class="d-flex align-items-baseline gap-2">
+                @if (Model.HasOffer)
+                {
+                    <span class="fw-bold text-danger">₹@Model.OfferPrice!.Value.ToString("N0")</span>
+                    <small class="text-muted text-decoration-line-through">₹@Model.Price.ToString("N0")</small>
+                }
+                else
+                {
+                    <span class="fw-bold">₹@Model.Price.ToString("N0")</span>
+                    @if (Model.MrpPrice is > 0 && Model.MrpPrice > Model.Price)
+                    {
+                        <small class="text-muted text-decoration-line-through">₹@Model.MrpPrice.Value.ToString("N0")</small>
+                    }
+                }
+            </div>
+            @if (Model.HasOffer && !string.IsNullOrEmpty(Model.OfferTitle))
+            {
+                <small class="text-danger d-block">@Model.OfferTitle</small>
+            }
+            @if (Model.ReviewCount > 0)
+            {
+                <small class="text-warning">★ @Model.AverageRating.ToString("0.0") <span class="text-muted">(@Model.ReviewCount)</span></small>
+            }
+        </div>
+    </a>
+</div>

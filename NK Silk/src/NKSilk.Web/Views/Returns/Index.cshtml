@@ -1,0 +1,42 @@
+@model IReadOnlyList<ReturnListItemVm>
+@{
+    ViewData["Title"] = "My Returns";
+}
+<div class="container py-4">
+    <h1 class="h4 mb-4">My Returns</h1>
+
+    @if (TempData["Success"] is string ok)
+    {
+        <div class="alert alert-success py-2">@ok</div>
+    }
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-light border text-center py-5">
+            You haven't requested any returns. <a asp-controller="Orders" asp-action="Index">View your orders →</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr><th>Return #</th><th>Order #</th><th>Date</th><th>Refund</th><th>Status</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@r.ReturnNumber</td>
+                            <td>@r.OrderNumber</td>
+                            <td>@r.RequestedAtUtc.ToLocalTime().ToString("dd MMM yyyy")</td>
+                            <td>₹@r.RefundAmount.ToString("N0")</td>
+                            <td><partial name="_ReturnStatusBadge" model="r.Status" /></td>
+                            <td><a class="btn btn-sm btn-outline-dark" asp-action="Details" asp-route-id="@r.ReturnNumber">View</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

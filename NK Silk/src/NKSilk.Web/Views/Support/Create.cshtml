@@ -1,0 +1,59 @@
+@model SupportTicketFormVm
+@{
+    ViewData["Title"] = "New support ticket";
+    string CategoryLabel(TicketCategory c) => c switch
+    {
+        TicketCategory.Order => "Order",
+        TicketCategory.Payment => "Payment",
+        TicketCategory.ReturnRefund => "Return / Refund",
+        TicketCategory.Product => "Product",
+        _ => "Other"
+    };
+}
+<div class="container py-4" style="max-width:680px">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-action="Index">Support</a></li>
+            <li class="breadcrumb-item active">New ticket</li>
+        </ol>
+    </nav>
+
+    <h1 class="h4 mb-3">How can we help?</h1>
+
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+
+        <div class="mb-3">
+            <label class="form-label" asp-for="Subject"></label>
+            <input class="form-control" asp-for="Subject" placeholder="Brief summary of your issue" />
+            <span asp-validation-for="Subject" class="text-danger small"></span>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label class="form-label" asp-for="Category"></label>
+                <select class="form-select" asp-for="Category">
+                    @foreach (var c in Enum.GetValues<TicketCategory>())
+                    {
+                        <option value="@c">@CategoryLabel(c)</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" asp-for="OrderNumber"></label>
+                <input class="form-control" asp-for="OrderNumber" placeholder="NK2026… (if relevant)" />
+                <span asp-validation-for="OrderNumber" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" asp-for="Message"></label>
+            <textarea class="form-control" asp-for="Message" rows="5" placeholder="Tell us what's going on…"></textarea>
+            <span asp-validation-for="Message" class="text-danger small"></span>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-accent">Submit ticket</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

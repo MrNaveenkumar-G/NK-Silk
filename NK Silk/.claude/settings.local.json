@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(dotnet add *)",
+      "PowerShell(dotnet build *)",
+      "Bash(dotnet build *)",
+      "Bash(cd /tmp)",
+      "Bash(curl -s -b /tmp/cj_sell.txt __TRACKED_VAR__/Vendor/Products)",
+      "PowerShell(Get-NetTCPConnection *)",
+      "Bash(dotnet sln *)",
+      "Bash(dotnet test *)"
+    ]
+  }
+}

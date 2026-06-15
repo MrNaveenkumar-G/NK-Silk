@@ -1,0 +1,63 @@
+@model AddressFormVm
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Add address" : "Edit address";
+}
+<div class="container py-4" style="max-width:640px">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-action="Index">My Addresses</a></li>
+            <li class="breadcrumb-item active">@ViewData["Title"]</li>
+        </ol>
+    </nav>
+    <h1 class="h4 mb-3">@ViewData["Title"]</h1>
+
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" asp-for="ContactName"></label>
+                <input class="form-control" asp-for="ContactName" />
+                <span asp-validation-for="ContactName" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" asp-for="PhoneNumber"></label>
+                <input class="form-control" asp-for="PhoneNumber" />
+                <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+            </div>
+            <div class="col-12">
+                <label class="form-label" asp-for="Line1"></label>
+                <input class="form-control" asp-for="Line1" />
+                <span asp-validation-for="Line1" class="text-danger small"></span>
+            </div>
+            <div class="col-12">
+                <label class="form-label" asp-for="Line2"></label>
+                <input class="form-control" asp-for="Line2" />
+            </div>
+            <div class="col-md-5">
+                <label class="form-label" asp-for="City"></label>
+                <input class="form-control" asp-for="City" />
+                <span asp-validation-for="City" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" asp-for="State"></label>
+                <input class="form-control" asp-for="State" />
+                <span asp-validation-for="State" class="text-danger small"></span>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" asp-for="PostalCode"></label>
+                <input class="form-control" asp-for="PostalCode" />
+                <span asp-validation-for="PostalCode" class="text-danger small"></span>
+            </div>
+            <div class="col-12">
+                <div class="form-check"><input class="form-check-input" asp-for="IsDefault" /><label class="form-check-label" asp-for="IsDefault"></label></div>
+            </div>
+        </div>
+        <div class="mt-3 d-flex gap-2">
+            <button type="submit" class="btn btn-accent">Save address</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,86 @@
+@model ShipmentDetailVm
+@{
+    ViewData["Title"] = $"Shipment · {Model.OrderNumber}";
+}
+
+<a asp-action="Index" class="btn btn-sm btn-link px-0 mb-2">← All shipments</a>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        @if (!Model.Exists)
+        {
+            <div class="card">
+                <div class="card-header bg-white fw-semibold">Create shipment for @Model.OrderNumber</div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="orderNumber" value="@Model.OrderNumber" />
+                        <div class="mb-2">
+                            <label class="form-label">Courier</label>
+                            <input name="courier" class="form-control" placeholder="Delhivery, Blue Dart…" required />
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Tracking number</label>
+                            <input name="trackingNumber" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Estimated delivery (optional)</label>
+                            <input name="estimatedDelivery" type="date" class="form-control" />
+                        </div>
+                        <button class="btn btn-accent">Create shipment</button>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card mb-3">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold">@Model.Courier · @Model.TrackingNumber</span>
+                    <span class="badge bg-primary">@Model.Status</span>
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var e in Model.Events)
+                    {
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-semibold">@e.Status</span>
+                                <small class="text-muted">@e.OccurredAtUtc.ToLocalTime().ToString("dd MMM, h:mm tt")</small>
+                            </div>
+                            @if (!string.IsNullOrEmpty(e.Note)) { <div class="small text-muted">@e.Note</div> }
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+
+    @if (Model.Exists)
+    {
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-header bg-white fw-semibold">Add tracking update</div>
+                <div class="card-body">
+                    <form asp-action="AddEvent" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="orderNumber" value="@Model.OrderNumber" />
+                        <div class="mb-2">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select">
+                                @foreach (var s in Enum.GetValues<ShipmentStatus>())
+                                {
+                                    <option value="@s" selected="@(s == Model.Status)">@s</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Note (optional)</label>
+                            <input name="note" class="form-control" placeholder="Reached Chennai hub" />
+                        </div>
+                        <button class="btn btn-accent w-100">Add update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>

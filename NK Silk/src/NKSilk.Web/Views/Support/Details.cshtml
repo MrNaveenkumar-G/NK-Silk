@@ -1,0 +1,58 @@
+@model SupportTicketDetailVm
+@{
+    ViewData["Title"] = $"Ticket {Model.TicketNumber}";
+}
+<div class="container py-4" style="max-width:760px">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-action="Index">Support</a></li>
+            <li class="breadcrumb-item active">@Model.TicketNumber</li>
+        </ol>
+    </nav>
+
+    @if (TempData["Success"] is string ok) { <div class="alert alert-success py-2">@ok</div> }
+    @if (TempData["Error"] is string err) { <div class="alert alert-danger py-2">@err</div> }
+
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <h1 class="h4 mb-0">@Model.Subject</h1>
+        <span class="badge bg-secondary">@Model.Status</span>
+    </div>
+    <p class="text-muted small">
+        @Model.TicketNumber · @Model.Category
+        @if (Model.OrderNumber is not null)
+        {
+            <span>· order <a asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderNumber">@Model.OrderNumber</a></span>
+        }
+    </p>
+
+    <div class="card mb-3">
+        <ul class="list-group list-group-flush">
+            @foreach (var m in Model.Messages)
+            {
+                <li class="list-group-item @(m.IsStaff ? "bg-light" : "")">
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-semibold">@m.AuthorName @(m.IsStaff ? "(Support)" : "")</span>
+                        <small class="text-muted">@m.CreatedAtUtc.ToLocalTime().ToString("dd MMM, h:mm tt")</small>
+                    </div>
+                    <div class="small" style="white-space:pre-wrap">@m.Body</div>
+                </li>
+            }
+        </ul>
+    </div>
+
+    @if (Model.Status != TicketStatus.Closed)
+    {
+        <form asp-action="Reply" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ticketNumber" value="@Model.TicketNumber" />
+            <div class="mb-2">
+                <textarea name="body" class="form-control" rows="3" placeholder="Write a reply…" required></textarea>
+            </div>
+            <button class="btn btn-accent btn-sm">Send reply</button>
+        </form>
+    }
+    else
+    {
+        <div class="alert alert-secondary py-2 small mb-0">This ticket is closed. Raise a new one if you still need help.</div>
+    }
+</div>

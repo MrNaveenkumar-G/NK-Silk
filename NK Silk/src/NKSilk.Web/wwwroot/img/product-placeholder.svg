@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+  <rect width="600" height="800" fill="#f1e9dd"/>
+  <rect x="40" y="40" width="520" height="720" fill="none" stroke="#c79a3a" stroke-width="3" stroke-dasharray="10 8"/>
+  <text x="300" y="400" font-family="Georgia, serif" font-size="42" fill="#4a1f2b" text-anchor="middle">NK Silk</text>
+  <text x="300" y="450" font-family="Arial, sans-serif" font-size="20" fill="#9a8b6f" text-anchor="middle">Product Image</text>
+</svg>

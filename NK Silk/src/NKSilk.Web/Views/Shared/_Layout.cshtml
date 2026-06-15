@@ -1,0 +1,132 @@
+@inject NKSilk.Application.Services.Interfaces.ICatalogService Catalog
+@inject NKSilk.Application.Services.Interfaces.INotificationService Notifications
+@{
+    var navCategories = await Catalog.GetCategoriesAsync();
+    var unreadNotifications = 0;
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        unreadNotifications = await Notifications.UnreadCountAsync(User.GetCustomerId());
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · NK Silk</title>
+    <meta name="description" content="NK Silk — premium sarees, silk &amp; cotton textiles online." />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Head", required: false)
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg nk-navbar sticky-top">
+            <div class="container">
+                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+                    NK<span class="text-accent">Silk</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nkNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="nkNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        @foreach (var cat in navCategories)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Catalog" asp-action="Index" asp-route-category="@cat.Slug">@cat.Name</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link text-danger fw-semibold" asp-controller="Offers" asp-action="Index">Offers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Combos" asp-action="Index">Combos</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex me-3" asp-controller="Catalog" asp-action="Index" method="get" role="search">
+                        <input class="form-control form-control-sm" type="search" name="search" placeholder="Search silk, cotton..." aria-label="Search" />
+                        <button class="btn btn-sm btn-accent ms-1" type="submit"><i class="bi bi-search"></i>Go</button>
+                    </form>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a class="btn btn-sm btn-outline-dark position-relative me-2" asp-controller="Notifications" asp-action="Index" title="Notifications">
+                            🔔
+                            <span id="notification-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="@(unreadNotifications > 0 ? "" : "display:none")">@unreadNotifications</span>
+                        </a>
+                        <a class="btn btn-sm btn-outline-dark position-relative me-2" asp-controller="Wishlist" asp-action="Index" title="Wishlist">
+                            ♥
+                            <span id="wishlist-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary" style="display:none">0</span>
+                        </a>
+                    }
+                    <a class="btn btn-sm btn-outline-dark position-relative me-2" asp-controller="Cart" asp-action="Index">
+                        Cart
+                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                    </a>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-accent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                @(User.Identity!.Name?.Split(' ')[0] ?? "Account")
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <li><a class="dropdown-item fw-semibold" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">⚙ Admin Panel</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                }
+                                @if (User.IsInRole("Vendor"))
+                                {
+                                    <li><a class="dropdown-item fw-semibold" asp-area="Vendor" asp-controller="Dashboard" asp-action="Index">🏬 Seller Portal</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                }
+                                <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">My Account</a></li>
+                                <li><a class="dropdown-item" asp-controller="Orders" asp-action="Index">My Orders</a></li>
+                                <li><a class="dropdown-item" asp-controller="AddressBook" asp-action="Index">My Addresses</a></li>
+                                <li><a class="dropdown-item" asp-controller="Returns" asp-action="Index">My Returns</a></li>
+                                <li><a class="dropdown-item" asp-controller="Support" asp-action="Index">Support</a></li>
+                                <li><a class="dropdown-item" asp-controller="Notifications" asp-action="Index">Notifications</a></li>
+                                <li><a class="dropdown-item" asp-controller="Cart" asp-action="Index">My Cart</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post" class="px-2">
+                                        <button type="submit" class="btn btn-link dropdown-item text-danger p-0">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a class="btn btn-sm btn-outline-dark me-1" asp-controller="Account" asp-action="Login">Login</a>
+                        <a class="btn btn-sm btn-accent" asp-controller="Account" asp-action="Register">Register</a>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    @Html.AntiForgeryToken()
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="nk-footer mt-5 py-4">
+        <div class="container text-center small">
+            <div class="mb-2 fw-bold">NK<span class="text-accent">Silk</span></div>
+            <p class="mb-1">Premium sarees &amp; textiles · Crafted in India</p>
+            &copy; 2026 NK Silk. All rights reserved. ·
+            <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

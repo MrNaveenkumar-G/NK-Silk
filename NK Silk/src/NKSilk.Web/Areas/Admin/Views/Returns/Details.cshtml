@@ -1,0 +1,101 @@
+@model ReturnDetailVm
+@{
+    ViewData["Title"] = $"Return {Model.ReturnNumber}";
+}
+
+<a asp-action="Index" class="btn btn-sm btn-link px-0 mb-2">← All returns</a>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">@Model.ReturnNumber · order @Model.OrderNumber</span>
+                <partial name="_ReturnStatusBadge" model="Model.Status" />
+            </div>
+            <div class="card-body p-0">
+                <table class="table mb-0 align-middle">
+                    <thead><tr><th class="ps-3">Item</th><th>Qty</th><th>Refund</th></tr></thead>
+                    <tbody>
+                    @foreach (var line in Model.Lines)
+                    {
+                        <tr>
+                            <td class="ps-3">@line.ProductName<br /><small class="text-muted">@line.ColorName @(string.IsNullOrEmpty(line.SizeName) ? "" : "/ " + line.SizeName)</small></td>
+                            <td>@line.Quantity</td>
+                            <td>₹@line.LineTotal.ToString("N0")</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body small">
+                <div class="d-flex justify-content-between"><span>Reason</span><span>@Model.Reason</span></div>
+                <div class="d-flex justify-content-between fw-bold"><span>Refund amount</span><span>₹@Model.RefundAmount.ToString("N0")</span></div>
+                @if (!string.IsNullOrEmpty(Model.Comments))
+                {
+                    <hr /><p class="mb-0 text-muted">Customer: “@Model.Comments”</p>
+                }
+                @if (!string.IsNullOrEmpty(Model.ResolutionNote))
+                {
+                    <hr /><p class="mb-0"><strong>Resolution note:</strong> @Model.ResolutionNote</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-header bg-white fw-semibold">Actions</div>
+            <div class="card-body">
+                @switch (Model.Status)
+                {
+                    case ReturnStatus.Requested:
+                        <form asp-action="Approve" method="post" class="mb-2">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="returnNumber" value="@Model.ReturnNumber" />
+                            <button class="btn btn-sm btn-success w-100">Approve return</button>
+                        </form>
+                        <form asp-action="Reject" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="returnNumber" value="@Model.ReturnNumber" />
+                            <input type="text" name="note" class="form-control form-control-sm mb-2" placeholder="Reason for rejection (optional)" />
+                            <button class="btn btn-sm btn-outline-danger w-100">Reject return</button>
+                        </form>
+                        break;
+                    case ReturnStatus.Approved:
+                        <form asp-action="PickedUp" method="post" class="mb-2">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="returnNumber" value="@Model.ReturnNumber" />
+                            <button class="btn btn-sm btn-primary w-100">Mark picked up</button>
+                        </form>
+                        <form asp-action="Refund" method="post" onsubmit="return confirm('Issue refund and restock items?');">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="returnNumber" value="@Model.ReturnNumber" />
+                            <button class="btn btn-sm btn-outline-success w-100">Issue refund</button>
+                        </form>
+                        break;
+                    case ReturnStatus.PickedUp:
+                        <form asp-action="Refund" method="post" onsubmit="return confirm('Issue refund and restock items?');">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="returnNumber" value="@Model.ReturnNumber" />
+                            <button class="btn btn-sm btn-success w-100">Issue refund</button>
+                        </form>
+                        break;
+                    default:
+                        <p class="small text-muted mb-0">No further action — this return is @Model.Status.</p>
+                        break;
+                }
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-white fw-semibold">Customer</div>
+            <div class="card-body small">
+                <p class="mb-1">@Model.CustomerName</p>
+                <p class="mb-0 text-muted">@Model.CustomerEmail</p>
+            </div>
+        </div>
+    </div>
+</div>

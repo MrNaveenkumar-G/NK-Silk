@@ -1,0 +1,61 @@
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="nk-hero text-white d-flex align-items-center">
+    <div class="container py-5">
+        <div class="col-lg-7">
+            <h1 class="display-4 fw-bold">Timeless Textiles, Woven for You</h1>
+            <p class="lead mb-4">Discover handpicked Kanchipuram silks, handloom cottons and festive wear — delivered across India.</p>
+            <a class="btn btn-accent btn-lg" asp-controller="Catalog" asp-action="Index">Shop the Collection</a>
+        </div>
+    </div>
+</section>
+
+@if (Model.Offers.Count > 0)
+{
+    <div class="bg-danger-subtle border-bottom">
+        <div class="container py-2 d-flex flex-wrap align-items-center gap-3">
+            <span class="badge bg-danger">OFFERS</span>
+            @foreach (var o in Model.Offers.Take(4))
+            {
+                <a class="text-decoration-none small fw-semibold text-dark" asp-controller="Offers" asp-action="Index">
+                    @o.Headline — @o.Title
+                </a>
+            }
+            <a class="small ms-auto" asp-controller="Offers" asp-action="Index">See all offers →</a>
+        </div>
+    </div>
+}
+
+<div class="container py-5">
+    <h2 class="h4 mb-4">Shop by Category</h2>
+    <div class="row g-3 mb-5">
+        @foreach (var cat in Model.Categories)
+        {
+            <div class="col-6 col-md-4">
+                <a class="card nk-category-card text-decoration-none h-100" asp-controller="Catalog" asp-action="Index" asp-route-category="@cat.Slug">
+                    <img src="@(cat.ImageUrl ?? "/img/product-placeholder.svg")" class="card-img-top" alt="@cat.Name" />
+                    <div class="card-body text-center">
+                        <h3 class="h6 mb-0 text-dark">@cat.Name</h3>
+                        <small class="text-muted">@cat.ProductCount products</small>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h4 mb-0">Featured Picks</h2>
+        <a asp-controller="Catalog" asp-action="Index" class="btn btn-sm btn-outline-dark">View all</a>
+    </div>
+    <div class="row g-3">
+        @foreach (var p in Model.Featured)
+        {
+            <div class="col-6 col-md-4 col-lg-3">
+                <partial name="_ProductCard" model="p" />
+            </div>
+        }
+    </div>
+</div>

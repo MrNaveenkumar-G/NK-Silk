@@ -1,0 +1,101 @@
+@model AdminProductEditVm
+@{
+    ViewData["Title"] = Model.Id == 0 ? "New Product" : "Edit Product";
+}
+
+<form asp-action="Edit" method="post">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+    <input type="hidden" asp-for="Id" />
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card mb-3">
+                <div class="card-header bg-white fw-semibold">Basic details</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <label asp-for="Sku" class="form-label"></label>
+                            <input asp-for="Sku" class="form-control" />
+                            <span asp-validation-for="Sku" class="text-danger small"></span>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label asp-for="Slug" class="form-label"></label>
+                            <input asp-for="Slug" class="form-control" placeholder="auto-generated if blank" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ShortDescription" class="form-label"></label>
+                        <input asp-for="ShortDescription" class="form-control" />
+                    </div>
+                    <div class="mb-0">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-white fw-semibold">Textile attributes</div>
+                <div class="card-body row">
+                    <div class="col-sm-6 mb-3"><label asp-for="FabricType" class="form-label"></label><input asp-for="FabricType" class="form-control" /></div>
+                    <div class="col-sm-6 mb-3"><label asp-for="MaterialComposition" class="form-label"></label><input asp-for="MaterialComposition" class="form-control" /></div>
+                    <div class="col-sm-4 mb-3"><label asp-for="Gsm" class="form-label"></label><input asp-for="Gsm" class="form-control" /></div>
+                    <div class="col-sm-4 mb-3"><label asp-for="WashCare" class="form-label"></label><input asp-for="WashCare" class="form-control" /></div>
+                    <div class="col-sm-4 mb-3"><label asp-for="Occasion" class="form-label"></label><input asp-for="Occasion" class="form-control" /></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-3">
+                <div class="card-header bg-white fw-semibold">Pricing &amp; category</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="CategoryId" class="form-label"></label>
+                        <select asp-for="CategoryId" class="form-select"
+                                asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+                            <option value="">— select —</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="BasePrice" class="form-label"></label>
+                        <input asp-for="BasePrice" class="form-control" />
+                        <span asp-validation-for="BasePrice" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-0">
+                        <label asp-for="MrpPrice" class="form-label"></label>
+                        <input asp-for="MrpPrice" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="form-check mb-2">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">Active (visible in store)</label>
+                    </div>
+                    <div class="form-check">
+                        <input asp-for="IsFeatured" class="form-check-input" />
+                        <label asp-for="IsFeatured" class="form-check-label"></label>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-accent w-100">Save Product</button>
+            <a asp-action="Index" class="btn btn-link w-100">Cancel</a>
+            @if (Model.Id == 0)
+            {
+                <p class="small text-muted mt-2">A default variant + inventory record is created automatically. Adjust stock under <strong>Inventory</strong>.</p>
+            }
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

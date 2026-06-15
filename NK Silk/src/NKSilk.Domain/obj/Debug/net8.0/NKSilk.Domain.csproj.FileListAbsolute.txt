@@ -1,0 +1,11 @@
+D:\Naveen\NK Silk\src\NKSilk.Domain\bin\Debug\net8.0\NKSilk.Domain.deps.json
+D:\Naveen\NK Silk\src\NKSilk.Domain\bin\Debug\net8.0\NKSilk.Domain.dll
+D:\Naveen\NK Silk\src\NKSilk.Domain\bin\Debug\net8.0\NKSilk.Domain.pdb
+D:\Naveen\NK Silk\src\NKSilk.Domain\obj\Debug\net8.0\NKSilk.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Naveen\NK Silk\src\NKSilk.Domain\obj\Debug\net8.0\NKSilk.Domain.AssemblyInfoInputs.cache
+D:\Naveen\NK Silk\src\NKSilk.Domain\obj\Debug\net8.0\NKSilk.Domain.AssemblyInfo.cs
+D:\Naveen\NK Silk\src\NKSilk.Domain\obj\Debug\net8.0\NKSilk.Domain.csproj.CoreCompileInputs.cache
+D:\Naveen\NK Silk\src\NKSilk.Domain\obj\Debug\net8.0\NKSilk.Domain.dll
+D:\Naveen\NK Silk\src\NKSilk.Domain\obj\Debug\net8.0\refint\NKSilk.Domain.dll
+D:\Naveen\NK Silk\src\NKSilk.Domain\obj\Debug\net8.0\NKSilk.Domain.pdb
+D:\Naveen\NK Silk\src\NKSilk.Domain\obj\Debug\net8.0\ref\NKSilk.Domain.dll

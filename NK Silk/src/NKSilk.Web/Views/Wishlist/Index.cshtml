@@ -1,0 +1,41 @@
+@model WishlistVm
+@{
+    ViewData["Title"] = "My Wishlist";
+}
+<div class="container py-4">
+    <h1 class="h4 mb-4">My Wishlist</h1>
+
+    @if (Model.IsEmpty)
+    {
+        <div class="alert alert-light border text-center py-5">
+            Your wishlist is empty. <a asp-controller="Catalog" asp-action="Index">Discover products →</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var item in Model.Items)
+            {
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="card nk-product-card h-100">
+                        <a asp-controller="Catalog" asp-action="Details" asp-route-id="@item.Slug" class="text-decoration-none">
+                            <img src="@(item.ImageUrl ?? "/img/product-placeholder.svg")" class="card-img-top" alt="@item.Name" />
+                            <div class="card-body">
+                                @if (!string.IsNullOrEmpty(item.FabricType)) { <small class="text-muted text-uppercase">@item.FabricType</small> }
+                                <h3 class="h6 text-dark mb-1 nk-clamp-2">@item.Name</h3>
+                                <span class="fw-bold">₹@item.Price.ToString("N0")</span>
+                            </div>
+                        </a>
+                        <div class="card-footer bg-white border-0 pt-0">
+                            <form asp-action="Remove" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <button class="btn btn-sm btn-outline-danger w-100">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

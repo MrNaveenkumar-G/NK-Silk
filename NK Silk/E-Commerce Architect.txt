@@ -1,0 +1,383 @@
+Act as a Senior Solution Architect and E-Commerce Consultant.
+
+I want to build a production-ready Textile E-Commerce Platform similar to Ramraj, Chennai Silks, Pothys, Nalli, and other leading textile brands.
+
+Technology Stack:
+
+Backend:
+- ASP.NET Core 8 MVC
+- C#
+- Entity Framework Core
+- SQL Server
+
+Frontend:
+- HTML5
+- CSS3
+- Bootstrap 5
+- JavaScript
+- jQuery
+- AJAX
+
+Mobile:
+- Responsive Web Application (Mobile Friendly)
+- Future Mobile App Support
+
+Generate a complete Business Requirement Document (BRD).
+
+Include:
+
+1. Project Overview
+2. Business Goals
+3. Customer Types
+4. User Roles
+5. Functional Requirements
+6. Non Functional Requirements
+7. Textile Industry Requirements
+8. Future Scalability Requirements
+9. Competitor Analysis
+10. Revenue Model
+
+Output should be professional and detailed.
+
+-------------------------------------------------------------------------------------------------------------------
+
+Act as a Senior Product Manager.
+
+For a Textile E-Commerce Website similar to Ramraj and Chennai Silks, generate a complete feature list.
+
+Modules:
+
+1. Customer Portal
+2. Admin Portal
+3. Vendor Portal
+4. Inventory Management
+5. Product Management
+6. Order Management
+7. Payment Management
+8. Coupon Management
+9. Offer Management
+10. Return Management
+11. Review Management
+12. Logistics Management
+13. Analytics Dashboard
+14. Notification System
+15. Customer Support
+
+For each module provide:
+
+- Purpose
+- Features
+- Database Tables Required
+- APIs Required
+
+Generate enterprise-level requirements.
+
+-------------------------------------------------------------------------------------------------------------------
+
+Act as a Senior SQL Server Database Architect.
+
+Design a complete SQL Server database for a Textile E-Commerce Platform.
+
+Technology:
+- SQL Server
+- ASP.NET Core MVC
+- Entity Framework Core
+
+Generate:
+
+1. ER Diagram Explanation
+2. Database Tables
+3. Primary Keys
+4. Foreign Keys
+5. Indexes
+6. Constraints
+
+Modules:
+
+- Users
+- Roles
+- Customers
+- Addresses
+- Products
+- Categories
+- Sub Categories
+- Brands
+- Product Images
+- Product Variants
+- Colors
+- Sizes
+- Inventory
+- Cart
+- Wishlist
+- Orders
+- Order Details
+- Payments
+- Coupons
+- Reviews
+- Returns
+- Notifications
+- Audit Logs
+
+Generate production-ready schema.
+
+-------------------------------------------------------------------------------------------------------------------------
+
+Act as a Senior UI/UX Designer.
+
+Design a modern Textile E-Commerce Website similar to Ramraj.
+
+Generate:
+
+Public Website Pages:
+
+1. Home
+2. Category Listing
+3. Product Listing
+4. Product Details
+5. Search Results
+6. Cart
+7. Checkout
+8. Wishlist
+9. Login
+10. Register
+11. My Orders
+12. Profile
+13. Returns
+
+Admin Pages:
+
+1. Dashboard
+2. Product Management
+3. Category Management
+4. Inventory Management
+5. Orders
+6. Customers
+7. Reports
+
+For each page provide:
+
+- Layout
+- Components
+- Bootstrap Structure
+- Mobile Responsive Design
+- User Flow
+
+Generate wireframe descriptions.
+
+---------------------------------------------------------------------------------------------------------------------------
+
+Act as a Senior ASP.NET Core Architect.
+
+Generate a complete enterprise-level folder structure.
+
+Technology:
+
+- ASP.NET Core 8 MVC
+- C#
+- SQL Server
+- Entity Framework Core
+- Bootstrap
+- jQuery
+
+Architecture:
+
+- MVC
+- Repository Pattern
+- Service Layer
+- Dependency Injection
+
+Generate:
+
+1. Project Structure
+2. Controllers
+3. Services
+4. Interfaces
+5. Repositories
+6. DTOs
+7. ViewModels
+8. Middleware
+9. Helpers
+10. Utilities
+
+Provide best practices.
+
+-------------------------------------------------------------------------------------------------------------------------
+
+Act as a Senior Backend Developer.
+
+Generate complete API design for Textile E-Commerce Website.
+
+Modules:
+
+- Authentication
+- Product
+- Category
+- Cart
+- Wishlist
+- Order
+- Payment
+- Customer
+- Review
+- Return
+
+For each API provide:
+
+- Endpoint
+- Request
+- Response
+- Validation
+- Error Handling
+
+Use REST API standards.
+
+-------------------------------------------------------------------------------------------------------------------------
+
+Act as a Senior ERP Developer.
+
+Generate a complete Admin Panel for Textile E-Commerce Platform.
+
+Modules:
+
+1. Dashboard
+2. Product Management
+3. Inventory Management
+4. Orders
+5. Customers
+6. Coupons
+7. Returns
+8. Reports
+9. Notifications
+
+For each module provide:
+
+- Screens
+- Workflow
+- Database Tables
+- ASP.NET MVC Pages
+- Permissions
+
+Generate enterprise-grade design.
+
+-------------------------------------------------------------------------------------------------------------------------
+
+Act as a Payment Gateway Architect.
+
+Generate implementation plan for:
+
+- Razorpay
+- PhonePe
+- UPI
+- Credit Card
+- Debit Card
+- Net Banking
+
+Technology:
+
+- ASP.NET Core MVC
+- C#
+
+Generate:
+
+1. Database Design
+2. Payment Flow
+3. Callback Handling
+4. Refund Handling
+5. Security Best Practices
+
+India-specific implementation.
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+Act as a Textile ERP Consultant.
+
+Generate advanced textile-specific features.
+
+Include:
+
+1. Fabric Type
+2. Color Variants
+3. Size Variants
+4. Material Composition
+5. GSM
+6. Wash Care
+7. Occasion Tags
+8. Seasonal Collections
+9. Combo Packs
+10. Festival Offers
+
+Generate database design and UI requirements.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Act as a Senior Enterprise Solution Architect, UI/UX Designer, SQL Architect, ASP.NET Core Architect, and E-Commerce Consultant.
+
+Build a complete Textile E-Commerce Platform similar to:
+
+- Ramraj
+- Chennai Silks
+- Pothys
+- Nalli
+
+Technology Stack:
+
+Backend:
+- ASP.NET Core 8 MVC
+- C#
+- Entity Framework Core
+- SQL Server
+
+Frontend:
+- HTML5
+- CSS3
+- Bootstrap 5
+- JavaScript
+- jQuery
+- AJAX
+
+Requirements:
+
+1. Public Website
+2. Admin Portal
+3. Vendor Portal
+4. Inventory Management
+5. Order Management
+6. Payment Integration
+7. Coupon System
+8. Returns Management
+9. Analytics Dashboard
+10. SEO Optimization
+11. Mobile Responsive Design
+12. Security Best Practices
+
+Generate:
+
+Phase 1:
+- BRD
+- SRS
+
+Phase 2:
+- Database Design
+- ER Diagram
+
+Phase 3:
+- Complete UI/UX
+
+Phase 4:
+- ASP.NET Core Architecture
+
+Phase 5:
+- API Design
+
+Phase 6:
+- Security Design
+
+Phase 7:
+- Deployment Architecture
+
+Phase 8:
+- Development Roadmap
+
+Provide enterprise-level implementation details suitable for handling 100,000+ products and 1 million+ customers.
+
+-------------------------------------------------------------------------------------------------------------------------
+

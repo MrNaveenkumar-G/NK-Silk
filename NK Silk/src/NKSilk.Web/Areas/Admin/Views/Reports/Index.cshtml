@@ -1,0 +1,110 @@
+@model SalesReportVm
+@{
+    ViewData["Title"] = "Reports";
+    var days = (int)(ViewData["Days"] ?? 30);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div class="btn-group">
+        @foreach (var d in new[] { 7, 30, 90 })
+        {
+            <a class="btn btn-sm @(days == d ? "btn-accent" : "btn-outline-secondary")" asp-action="Index" asp-route-days="@d">Last @d days</a>
+        }
+    </div>
+    <a class="btn btn-sm btn-outline-dark" asp-action="Export" asp-route-days="@days">⬇ Export CSV</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3"><div class="card stat-card p-3"><div class="stat-value">₹@Model.TotalRevenue.ToString("N0")</div><div class="stat-label">Revenue (@Model.Days d)</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card p-3"><div class="stat-value">@Model.OrderCount</div><div class="stat-label">Orders</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card p-3"><div class="stat-value">₹@Model.AverageOrderValue.ToString("N0")</div><div class="stat-label">Avg order value</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card p-3"><div class="stat-value">@Model.ReturnsCount <small class="text-muted fs-6">/ ₹@Model.ReturnsValue.ToString("N0")</small></div><div class="stat-label">Returns</div></div></div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header bg-white fw-semibold">Daily revenue</div>
+    <div class="card-body">
+        @if (Model.Daily.Count == 0)
+        {
+            <p class="text-muted mb-0">No sales in this period.</p>
+        }
+        else
+        {
+            <div class="d-flex align-items-end gap-1" style="height:160px">
+                @foreach (var d in Model.Daily)
+                {
+                    var pct = Model.MaxDailyRevenue == 0 ? 0 : (int)Math.Round((double)(d.Revenue / Model.MaxDailyRevenue) * 100);
+                    <div class="flex-fill" title="@d.Date.ToString("dd MMM"): ₹@d.Revenue.ToString("N0") (@d.Orders orders)"
+                         style="background:#b8860b;height:@(pct)%;min-height:2px;border-radius:2px 2px 0 0"></div>
+                }
+            </div>
+            <div class="d-flex justify-content-between small text-muted mt-1">
+                <span>@Model.Daily.First().Date.ToString("dd MMM")</span>
+                <span>@Model.Daily.Last().Date.ToString("dd MMM")</span>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header bg-white fw-semibold">Top products</div>
+            <div class="card-body p-0">
+                <table class="table mb-0 align-middle">
+                    <thead><tr><th class="ps-3">Product</th><th>Units</th><th>Revenue</th></tr></thead>
+                    <tbody>
+                    @foreach (var p in Model.TopProducts)
+                    {
+                        <tr><td class="ps-3">@p.ProductName</td><td>@p.UnitsSold</td><td>₹@p.Revenue.ToString("N0")</td></tr>
+                    }
+                    @if (Model.TopProducts.Count == 0) { <tr><td colspan="3" class="text-center text-muted py-3">No data.</td></tr> }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card mb-4">
+            <div class="card-header bg-white fw-semibold">Revenue by category</div>
+            <div class="card-body p-0">
+                <table class="table mb-0 align-middle">
+                    <thead><tr><th class="ps-3">Category</th><th>Revenue</th></tr></thead>
+                    <tbody>
+                    @foreach (var c in Model.TopCategories)
+                    {
+                        <tr><td class="ps-3">@c.CategoryName</td><td>₹@c.Revenue.ToString("N0")</td></tr>
+                    }
+                    @if (Model.TopCategories.Count == 0) { <tr><td colspan="2" class="text-center text-muted py-3">No data.</td></tr> }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header bg-white fw-semibold">Orders by status</div>
+            <div class="card-body">
+                @foreach (var s in Model.StatusBreakdown)
+                {
+                    <span class="badge bg-light text-dark me-1 mb-1">@s.Status: @s.Count</span>
+                }
+                @if (Model.StatusBreakdown.Count == 0) { <span class="text-muted">No data.</span> }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header bg-white fw-semibold">Low stock (≤ reorder level)</div>
+    <div class="card-body p-0">
+        <table class="table mb-0 align-middle">
+            <thead><tr><th class="ps-3">Product</th><th>SKU</th><th>On hand</th><th>Reorder level</th></tr></thead>
+            <tbody>
+            @foreach (var l in Model.LowStock)
+            {
+                <tr><td class="ps-3">@l.ProductName</td><td class="small">@l.Sku</td><td>@l.OnHand</td><td>@l.ReorderLevel</td></tr>
+            }
+            @if (Model.LowStock.Count == 0) { <tr><td colspan="4" class="text-center text-muted py-3">Everything is well stocked. 🎉</td></tr> }
+            </tbody>
+        </table>
+    </div>
+</div>
